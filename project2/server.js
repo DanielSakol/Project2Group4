@@ -67,7 +67,7 @@ firebase.auth().signInWithEmailAndPassword('daniel.sakol@yahoo.com', '123456')
     }
   })
   .catch((error) => {
-  // Handle Errors here.
+    // Handle Errors here.
     let errorCode = error.code;
     let errorMessage = error.message;
 

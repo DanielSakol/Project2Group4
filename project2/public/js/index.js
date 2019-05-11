@@ -1,12 +1,13 @@
 // Get references to page elements
 let $exampleText = $('#example-text');
 let $exampleDescription = $('#example-description');
-let $submitBtn = $('#submit');
+let $submitBtn = $('#submitBtn');
 let $exampleList = $('#example-list');
 
 // The API object contains methods for each kind of request we'll make
 let API = {
   saveExample(example) {
+    console.log(example);
     return $.ajax({
       headers: {
         "Content-Type": "application/json"
@@ -33,7 +34,7 @@ let API = {
 // refreshExamples gets new examples from the db and repopulates the list
 let refreshExamples = function () {
   API.getExamples().then((data) => {
-    var $examples = data.map(function(example) {
+    var $examples = data.map(function (example) {
       var $a = $("<a>")
         .text(example.text)
         .attr("href", "/example/" + example.id);
@@ -65,18 +66,18 @@ let handleFormSubmit = function (event) {
   event.preventDefault();
 
   let example = {
-    text: $exampleText.val().trim(),
-    description: $exampleDescription.val().trim(),
+    text: $('#fullName').val().trim(),
+    description: $('#inputEmail').val().trim(),
   };
+
+  console.log(example);
 
   if (!(example.text && example.description)) {
     alert('You must enter an example text and description!');
     return;
   }
 
-  API.saveExample(example).then(() => {
-    refreshExamples();
-  });
+  API.saveExample(example).then(() => { refreshExamples(); });
 
   $exampleText.val('');
   $exampleDescription.val('');
