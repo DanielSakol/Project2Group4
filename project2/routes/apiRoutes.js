@@ -1,6 +1,16 @@
 var db = require("../models");
 const axios = require("axios");
 
+/*
+NDB API search:
+https://ndb.nal.usda.gov/ndb/doc/apilist/API-SEARCH.md
+
+NDB API food report V1
+https://ndb.nal.usda.gov/ndb/doc/apilist/API-FOOD-REPORT.md
+
+NDB API food report V2
+https://ndb.nal.usda.gov/ndb/doc/apilist/API-FOOD-REPORTV2.md
+*/
 const genUpcQueryUrl = function (upcCode) {
   const baseUrl = 'https://api.nal.usda.gov/ndb/search/?';
   const params = {
@@ -15,7 +25,7 @@ const genUpcQueryUrl = function (upcCode) {
 
 const genNdbnoQueryUrl = function (ndbno) {
   // const baseUrl = 'https://api.nal.usda.gov/ndb/search/?';
-  const baseUrl = 'https://api.nal.usda.gov/ndb/reports/?';
+  const baseUrl = 'https://api.nal.usda.gov/ndb/V2/reports/?';
   const params = {
     format: 'json',
     type:'s', // [b]asic, [f]ull, [s]tats
@@ -53,9 +63,10 @@ module.exports = function (app) {
     // calling res.send() here is problematic for the other res.send() call later
     // res.send("custom api called");
     // console.log("custom api called");
+
     const upc = '070038630678';//'096619756803'
     const upcQueryUrl = genUpcQueryUrl(upc);
-    console.log('UPC query url:\n', upcQueryUrl);
+    console.log('Searching ndbno in USDA using UPC:\n', upcQueryUrl);
     axios
       .get(upcQueryUrl)
       .then(function (response) {
@@ -64,16 +75,15 @@ module.exports = function (app) {
 
         const itemLst = response.data.list.item;
         const ndbLst = itemLst.map(v => v.ndbno);
-        console.log('item list matching upc code: ', itemLst);
-        console.log('extracted ndbno: ', ndbLst);
+        // console.log('item list matching upc code: ', itemLst);
+        // console.log('extracted ndbno: ', ndbLst);
 
         if (ndbLst) {
           const ndbQueryUrl = genNdbnoQueryUrl(ndbLst[0]);
-          console.log('ndbno query url:\n', ndbQueryUrl);
+          console.log('Querying USDA food report using ndbno:\n', ndbQueryUrl);
           axios.get(ndbQueryUrl)
             .then(response => {
-              // console.log(response.data);
-
+              // 
               res.send(response.data);
             })
             .catch(error => {
