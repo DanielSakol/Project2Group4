@@ -3,12 +3,26 @@ var db = require("../models");
 module.exports = function (app) {
   // Load index page
   app.get("/", function (req, res) {
-    db.Example.findAll({}).then(function (dbExamples) {
-      res.render("index", {
-        msg: "Welcome!",
-        examples: dbExamples
+    db.Example.findAll({})
+      .then(function (dbExamples) {
+        // res.render("index", {
+        //   msg: "Welcome!",
+        //   examples: dbExamples
+        // });
+        res.render("home");
       });
-    });
+  });
+
+  // Load signup page
+  app.get("/signup", function (req, res) {
+    db.Example.findAll({})
+      .then(function (dbExamples) {
+        // res.render("index", {
+        //   msg: "Welcome!",
+        //   examples: dbExamples
+        // });
+        res.render("signup");
+      });
   });
 
   // Load example page and pass in an example by id
