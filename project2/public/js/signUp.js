@@ -1,6 +1,5 @@
 console.log("signUp.js running");
-
-let signUpBtn = $("#signUp");
+sessionStorage.setItem("uid", null);
 
 let handleSignUp = function (event) {
     event.preventDefault();
@@ -13,7 +12,7 @@ let handleSignUp = function (event) {
     $.ajax({
         url: "/api/signup",
         method: "POST",
-        // has to be a data object
+        // has to be an object named data
         data: {
             fullName: $("#fullName").val().trim(),
             userName: $("#userName").val().trim(),
@@ -24,12 +23,12 @@ let handleSignUp = function (event) {
         console.log('response received.');
         console.log(response);
         // console.log(response.uid);
-        // if (response.uid) {
-        //     sessionStorage.setItem("uid", response.uid);
-        // } else {
-        //     sessionStorage.setItem("uid", null);
-        // }
+        if (response.uid) {
+            sessionStorage.setItem("uid", response.uid);
+        } else {
+            sessionStorage.setItem("uid", null);
+        }
     })
 }
 
-signUpBtn.on('click', handleSignUp);
+$("#signUp").on('click', handleSignUp);

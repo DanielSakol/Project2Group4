@@ -1,6 +1,5 @@
 console.log("signIn.js running");
-
-let signinBtn = $("#signIn");
+sessionStorage.setItem("uid", null);
 
 let handleSignIn = function (event) {
     event.preventDefault();
@@ -16,7 +15,7 @@ let handleSignIn = function (event) {
             password: $("#userPassword").val().trim()
         }
     }).then(response => {
-        console.log(response.uid);
+        console.log(response);
         if (response.uid) {
             sessionStorage.setItem("uid", response.uid);
         } else {
@@ -25,4 +24,4 @@ let handleSignIn = function (event) {
     })
 }
 
-signinBtn.on('click', handleSignIn);
+$("#signIn").on('click', handleSignIn);

@@ -43,25 +43,26 @@ const genNdbnoQueryUrl = function (ndbno) {
 module.exports = function (app) {
   // Get all examples
   app.get("/api/examples", function (req, res) {
-    db.Example.findAll({}).then(function (dbExamples) {
+    db.dbTable.findAll({}).then(function (dbExamples) {
       res.json(dbExamples);
     });
   });
 
   // Create a new example
   app.post("/api/examples", function (req, res) {
-    db.Example.create(req.body).then(function (dbExample) {
+    db.dbTable.create(req.body).then(function (dbExample) {
       res.json(dbExample);
     });
   });
 
   // Delete an example by id
   app.delete("/api/examples/:id", function (req, res) {
-    db.Example.destroy({ where: { id: req.params.id } }).then(function (dbExample) {
+    db.dbTable.destroy({ where: { id: req.params.id } }).then(function (dbExample) {
       res.json(dbExample);
     });
   });
 
+  //--------
   app.post("/api/signin", function (req, res) {
     console.log("/api/signin called");
     const email = req.body.email;
@@ -87,7 +88,6 @@ module.exports = function (app) {
 
   app.post("/api/signup", function (req, res) {
     console.log("/api/signup called");
-    // [fullName, userName, userEmail, userPswd] = req.body;
     console.log(req.body);
 
     firebase.auth().createUserWithEmailAndPassword(req.body.userEmail, req.body.userPswd)
@@ -96,6 +96,10 @@ module.exports = function (app) {
           let currentUser = firebase.auth().currentUser;
           console.log(currentUser.uid);
           res.json({ uid: currentUser.uid });
+
+          db.dbTable.create(req.body).then(function (dbExample) {
+            res.json(dbExample);
+          });
         }
       })
       .catch((error) => {
@@ -108,12 +112,23 @@ module.exports = function (app) {
 
   });
 
-  app.get("/api/dev", function (req, res) {
+  app.post("/api/query", function (req, res) {
     // calling res.send() here is problematic for the other res.send() call later
     // res.send("custom api called");
     // console.log("custom api called");
+    // const upc = '070038630678';//'096619756803'
+    const upc = req.body.queryStr;
+    const uid = req.body.uid;
+    
+    if (uid) {
+      console.log(uid);
+      db.dbTable.create({
+        uid: uid,
+        dataUPC: upc
+        // dataNDBNO:
+      }).then(dbItem => { console.log(dbItem); });
+    }
 
-    const upc = '070038630678';//'096619756803'
     const upcQueryUrl = genUpcQueryUrl(upc);
     console.log('Searching ndbno in USDA using UPC:\n', upcQueryUrl);
     axios
@@ -122,6 +137,7 @@ module.exports = function (app) {
         // console.log(response);
         // res.send(response.data);
 
+        // TODO: handle the case of no results
         const itemLst = response.data.list.item;
         const ndbLst = itemLst.map(v => v.ndbno);
         // console.log('item list matching upc code: ', itemLst);
@@ -142,6 +158,20 @@ module.exports = function (app) {
       })
       .catch(function (error) {
         console.log(error);
+      });
+  });
+
+  // Create a new record in mysql table
+  app.post("/api/log", function (req, res) {
+    console.log(req);
+    let record = {
+      uid: req.body.uid,
+      dataUPC: req.body.dataUPC,
+      dataNDBNO: req.body.dataNDBNO
+    }
+    db.dbTable.create(record)
+      .then(function (dbRecord) {
+        res.json(dbRecord);
       });
   });
 };
