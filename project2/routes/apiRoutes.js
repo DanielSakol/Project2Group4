@@ -1,6 +1,9 @@
 var db = require("../models");
 const axios = require("axios");
 
+const firebase = require('firebase/app');
+require('firebase/auth');
+
 /*
 NDB API search:
 https://ndb.nal.usda.gov/ndb/doc/apilist/API-SEARCH.md
@@ -28,7 +31,7 @@ const genNdbnoQueryUrl = function (ndbno) {
   const baseUrl = 'https://api.nal.usda.gov/ndb/V2/reports/?';
   const params = {
     format: 'json',
-    type:'s', // [b]asic, [f]ull, [s]tats
+    type: 's', // [b]asic, [f]ull, [s]tats
     ndbno: [ndbno], // a list of up to 25 nbd numbers
     api_key: process.env.usda_key
   };
@@ -57,6 +60,29 @@ module.exports = function (app) {
     db.Example.destroy({ where: { id: req.params.id } }).then(function (dbExample) {
       res.json(dbExample);
     });
+  });
+
+  app.post("/api/signin", function (req, res) {
+    console.log("/api/signin called");
+    const email = req.body.email;
+    const password = req.body.password;
+    console.log(email, password);
+
+    firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((user) => {
+        if (user) {
+          let currentUser = firebase.auth().currentUser;
+          console.log(currentUser.uid);
+          res.json({ uid: currentUser.uid });
+        }
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        let errorCode = error.code;
+        let errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        res.json(error);
+      });
   });
 
   app.get("/api/dev", function (req, res) {
