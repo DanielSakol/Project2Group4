@@ -1,13 +1,12 @@
-console.log("signin.js running");
+console.log("signIn.js running");
 
-let signinBtn = $("#signin");
+let signinBtn = $("#signIn");
 
 let handleSignIn = function (event) {
     event.preventDefault();
     console.log("sign-in requested");
     console.log($("#userEmail").val().trim());
     console.log($("#userPassword").val().trim());
-
     $.ajax({
         url: "/api/signin",
         method: "POST",
@@ -17,7 +16,12 @@ let handleSignIn = function (event) {
             password: $("#userPassword").val().trim()
         }
     }).then(response => {
-        console.log(response);
+        console.log(response.uid);
+        if (response.uid) {
+            sessionStorage.setItem("uid", response.uid);
+        } else {
+            sessionStorage.setItem("uid", null);
+        }
     })
 }
 

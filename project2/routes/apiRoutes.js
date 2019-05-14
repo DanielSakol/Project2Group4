@@ -85,6 +85,29 @@ module.exports = function (app) {
       });
   });
 
+  app.post("/api/signup", function (req, res) {
+    console.log("/api/signup called");
+    // [fullName, userName, userEmail, userPswd] = req.body;
+    console.log(req.body);
+
+    firebase.auth().createUserWithEmailAndPassword(req.body.userEmail, req.body.userPswd)
+      .then((user) => {
+        if (user) {
+          let currentUser = firebase.auth().currentUser;
+          console.log(currentUser.uid);
+          res.json({ uid: currentUser.uid });
+        }
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        let errorCode = error.code;
+        let errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        res.json(error);
+      });
+
+  });
+
   app.get("/api/dev", function (req, res) {
     // calling res.send() here is problematic for the other res.send() call later
     // res.send("custom api called");
