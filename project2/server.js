@@ -33,32 +33,20 @@ if (process.env.NODE_ENV === 'test') {
   syncOptions.force = true;
 }
 
-// Starting the server, syncing our models ------------------------------------/
-db.sequelize.sync(syncOptions).then(() => {
-  app.listen(PORT, () => {
-    console.log(
-      '==> Listening on port %s. Visit http://localhost:%s/ in your browser.',
-      PORT,
-      PORT,
-    );
-  });
-});
+// firebase user auth
+const firebase = require('firebase/app');
+require('firebase/auth');
 
-// const firebase = require('firebase/app');
-
-// require('firebase/auth');
-
-// const firebaseConfig = {
-//   apiKey: 'AIzaSyAYVGGhcwOrO97G3CpRsgEWvr5QqUsKpvA',
-//   authDomain: 'group4proj2.firebaseapp.com',
-//   databaseURL: 'https://group4proj2.firebaseio.com',
-//   projectId: 'group4proj2',
-//   storageBucket: 'group4proj2.appspot.com',
-//   messagingSenderId: '839976170219',
-//   appId: '1:839976170219:web:ccc53f18cdabca1c',
-// };
-
-// firebase.initializeApp(firebaseConfig);
+const firebaseConfig = {
+  apiKey: process.env.firebase_apiKey,
+  authDomain: 'group4proj2.firebaseapp.com',
+  databaseURL: 'https://group4proj2.firebaseio.com',
+  projectId: 'group4proj2',
+  storageBucket: 'group4proj2.appspot.com',
+  messagingSenderId: '839976170219',
+  appId: process.env.firebase_appID
+};
+firebase.initializeApp(firebaseConfig);
 
 // firebase.auth().signInWithEmailAndPassword('daniel.sakol@yahoo.com', '123456')
 //   .then((user) => {
@@ -73,5 +61,16 @@ db.sequelize.sync(syncOptions).then(() => {
 
 //     console.log(errorCode, errorMessage);
 //   });
+
+// Starting the server, syncing our models ------------------------------------/
+db.sequelize.sync(syncOptions).then(() => {
+  app.listen(PORT, () => {
+    console.log(
+      '==> Listening on port %s. Visit http://localhost:%s/ in your browser.',
+      PORT,
+      PORT,
+    );
+  });
+});
 
 module.exports = app;
