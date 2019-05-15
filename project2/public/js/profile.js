@@ -5,7 +5,6 @@ if (!sessionStorage.uid || sessionStorage.uid === 'null') {
     $("#displayName").text("Sign in to see your profile");
 }
 else {
-    $("#displayName").text(sessionStorage.uid);
     const queryJSON = {
         uid: sessionStorage.uid
     };
@@ -14,14 +13,15 @@ else {
         url: "/api/history",
         data: queryJSON
     }).then(response => {
-        console.log(response[0].dataNDBNO);
+        // console.log(response[0].dataNDBNO);
+        console.log(response);
+        $("#displayName").text("Hello " + response.fullName);
         let row;
-        response.forEach(itm => {
+        response.history.forEach(itm => {
             row = $('<tr>');
-            row.append($('<td>').text(itm.dataNDBNO));
+            row.append($('<td>').text(itm));
             row.appendTo($("#tbody"));
-        })
-        // $("#tbody").append()
+        });
     })
 }
 

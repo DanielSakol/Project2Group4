@@ -189,14 +189,51 @@ module.exports = function (app) {
 
   app.post("/api/history", function (req, res) {
     console.log("/api/history called\n", req.body, req.body.uid);
-    let history = null;
-    db.dbTable.findAll({
-      where: {
-        uid: req.body.uid
-      }
-    }).then(function (dbRecords) {
-      res.json(dbRecords);
-    });
+    let retJSON = {};
+    db.usrTable.findAll({ where: { uid: req.body.uid } })
+      .then(dbRecords => {
+        const userEntry = dbRecords[0].dataValues;
+        // console.log(dbRecords[0].dataValues);
+        retJSON['userName'] = userEntry.userName;
+        retJSON['userEmail'] = userEntry.userEmail;
+        retJSON['fullName'] = userEntry.fullName;
+        // console.log(retJSON);
+        return retJSON
+      }).then(retJSON => {
+        return db.dbTable.findAll({
+          where: {
+            uid: req.body.uid
+          }
+        }).then(function (dbRecords) {
+          const ndbnoArr = dbRecords.map(v => v.dataValues.dataNDBNO);
+          retJSON['history'] = ndbnoArr;
+          // console.log(retJSON);
+          return retJSON;
+        }).then(retJSON => {
+          console.log(retJSON);
+          res.json(retJSON);
+        })
+      })
+    // db.dbTable.findAll({
+    //   where: {
+    //     uid: req.body.uid
+    //   }
+    // }).then(function (dbRecords) {
+    //   const toPage = [];
+    //   const ndbnoArr = dbRecords.map(v => v.dataValues.dataNDBNO);
+    //   // ndbnoArr.forEach(v => {
+    //   //   console.log(v);
+    //   //   axios.get(genNdbnoQueryUrl(v))
+    //   //     .then(response => {
+    //   //       console.log(response.data.foods[0].food.desc.name);
+    //   //       toPage.push(response.data.foods[0].food.desc.name);
+    //   //     })
+    //   // })
+
+    //   // dbRecords[0].dataValues.dataNDBNO
+    //   // console.log(genNdbnoQueryUrl(ndbnoArr));
+    //   res.json(dbRecords);
+    // });
   })
 
   // Create a new record in mysql table

@@ -17,7 +17,8 @@ let searchBtnFn = function (event) {
         console.log(response);
         // empty out the product-name/ingredient 
         // take response and append into product-name/ingredient
-        $('#product-name').empty(); $('#product-name').append(JSON.stringify(response.foods[0].food.desc.name))
+        $('#product-name').empty(); 
+        $('#product-name').append(JSON.stringify(response.foods[0].food.desc.name))
 
         let ingStr=response.foods[0].food.ing.desc;
         let ingArr=ingStr.split(',');
