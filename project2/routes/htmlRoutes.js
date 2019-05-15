@@ -5,6 +5,7 @@ module.exports = function (app) {
   app.get("/", function (req, res) {
     db.dbTable.findAll({})
       .then(function (dbExamples) {
+        product();
         // res.render("index", {
         //   msg: "Welcome!",
         //   examples: dbExamples
@@ -24,6 +25,7 @@ module.exports = function (app) {
         res.render("signup");
       });
   });
+
 
   // Load product page
   app.get("/product", function (req, res) {

@@ -18,7 +18,20 @@ let searchBtnFn = function (event) {
         // empty out the product-name/ingredient 
         // take response and append into product-name/ingredient
         $('#product-name').empty(); $('#product-name').append(JSON.stringify(response.foods[0].food.desc.name))
-        $('#product-ingredient').empty(); $('#product-ingredient').append(JSON.stringify(response.foods[0].food.ing.desc))
+
+        let ingStr=response.foods[0].food.ing.desc;
+        let ingArr=ingStr.split(',');
+        console.log(ingArr);
+        
+        $('#product-ingredient').empty();
+        for (i = 0; i < ingArr.length; i++) {
+        $('#product-ingredient').append('<tr><td>' + JSON.stringify(ingArr[i]) + '</td><tr>')
+        }
+        
+
+  
+
+
     }).catch(error => {
         console.log(error);
     })
@@ -26,6 +39,3 @@ let searchBtnFn = function (event) {
 
 $("#searchBtn").on('click', searchBtnFn);
 
-
-
-$('div#1').empty(); $('div#1').append('your code here');
