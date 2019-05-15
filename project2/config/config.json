@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
+    "username": "nutiz11ok6n3ejz3",
     "password": null,
-    "database": "xpzr_db",
-    "host": "localhost",
+    "database": "etbmnuz4m8piuz6g",
+    "host": "muowdopceqgxjn2b.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
     "dialect": "mysql"
   },
   "test": {
