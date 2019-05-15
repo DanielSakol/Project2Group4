@@ -28,6 +28,12 @@ let handleSignUp = function (event) {
         } else {
             sessionStorage.setItem("uid", null);
         }
+        // $.ajax({
+        //     url: "/",
+        //     method: "GET"
+        // });
+        // $.get("/");
+        window.location.replace("/");
     })
 }
 

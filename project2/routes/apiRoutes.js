@@ -95,11 +95,23 @@ module.exports = function (app) {
         if (user) {
           let currentUser = firebase.auth().currentUser;
           console.log(currentUser.uid);
-          res.json({ uid: currentUser.uid });
 
-          db.dbTable.create(req.body).then(function (dbExample) {
-            res.json(dbExample);
-          });
+          const sqlEntry = {
+            uid: currentUser.uid,
+            userName: req.body.userName,
+            userEmail: req.body.userEmail,
+            fullName: req.body.fullName
+          };
+          res.json(sqlEntry);
+
+          db.usrTable.create(sqlEntry)
+            .then(function (dbRecord) {
+              console.log('entry written to sql usrTable');
+            })
+            .catch(error => {
+              console.log(error);
+              // res.json(error);
+            });
         }
       })
       .catch((error) => {
@@ -166,6 +178,26 @@ module.exports = function (app) {
         res.send(error);
       });
   });
+
+  app.post("/api/profile", function (req, res) {
+    console.log("/api/profile called\n", req.body, req.body.uid);
+    res.json({
+      userName: "asdf",
+      histList: []
+    });
+  })
+
+  app.post("/api/history", function (req, res) {
+    console.log("/api/history called\n", req.body, req.body.uid);
+    let history = null;
+    db.dbTable.findAll({
+      where: {
+        uid: req.body.uid
+      }
+    }).then(function (dbRecords) {
+      res.json(dbRecords);
+    });
+  })
 
   // Create a new record in mysql table
   app.post("/api/log", function (req, res) {

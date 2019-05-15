@@ -1,5 +1,6 @@
 console.log("signIn.js running");
-sessionStorage.setItem("uid", null);
+
+// sessionStorage.setItem("uid", null);
 
 let handleSignIn = function (event) {
     event.preventDefault();
