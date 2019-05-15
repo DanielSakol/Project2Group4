@@ -119,7 +119,7 @@ module.exports = function (app) {
     // const upc = '070038630678';//'096619756803'
     const upc = req.body.queryStr;
     const uid = req.body.uid;
-    
+
     if (uid) {
       console.log(uid);
       db.dbTable.create({
@@ -144,7 +144,8 @@ module.exports = function (app) {
         // console.log('extracted ndbno: ', ndbLst);
 
         if (ndbLst) {
-          const ndbQueryUrl = genNdbnoQueryUrl(ndbLst[0]);
+          const ndbno = ndbLst[0];
+          const ndbQueryUrl = genNdbnoQueryUrl(ndbno);
           console.log('Querying USDA food report using ndbno:\n', ndbQueryUrl);
           axios.get(ndbQueryUrl)
             .then(response => {

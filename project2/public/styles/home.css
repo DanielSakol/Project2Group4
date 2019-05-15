@@ -8,7 +8,7 @@ body {
 .typewriter h1 {
     height: 17px;
     width: 50%;
-    padding-left: 30%;
+    padding-left: 34.2%;
     font-size: 12px;
     color: rgb(81, 216, 63);
     overflow: hidden; /* Ensures the content is not revealed until the animation */
@@ -107,40 +107,3 @@ body {
   50% { background-color: black; box-shadow: 0 0 40px rgb(0, 255, 34); }
   100% { background-color: black; box-shadow: 0 0 3px rgb(0, 178, 30); }
 }
-
-
-
-#productTitle {
-  color: green;
-  font-size: 100%;
-  text-align: center;
-  font-family: "Lucida Console", Monaco, monospace;
-  width: 100%;
-  padding-top: 5%;
-}
-
-#img {
-  height: 100%;
-  margin: 2%;
-  text-align: center;
-}
-
-.list-ingredient {
-  padding: 1%;
-  margin-left: 5%;
-  margin-right: 5%;
-}
-.form-inline{
-  width: 40%;
-}
-.camera-Icon {
-  margin-left: 1%;
-}
-
-.table-hover {
-  margin: 5%;
-  width: 90%;
-  background-color: #343a40;
-  color: white;
-}
-
