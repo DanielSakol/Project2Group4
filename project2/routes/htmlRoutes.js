@@ -25,6 +25,13 @@ module.exports = function (app) {
       });
   });
 
+  // Load product page
+  app.get("/product", function (req, res) {
+        res.render("product");
+      });
+  
+  
+
   // Load example page and pass in an example by id
   app.get("/example/:id", function (req, res) {
     db.dbTable.findOne({ where: { id: req.params.id } })
@@ -34,6 +41,18 @@ module.exports = function (app) {
         });
       });
   });
+
+    // Load product page
+    app.get("/barcode", function (req, res) {
+          res.render("barcode");
+        });
+
+    // Load profile page
+    app.get("/profile", function (req, res) {
+      res.render("profile");
+    });
+    
+
 
   // Render 404 page for any unmatched routes
   app.get("*", function (req, res) {
