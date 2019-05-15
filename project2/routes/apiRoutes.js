@@ -120,15 +120,6 @@ module.exports = function (app) {
     const upc = req.body.queryStr;
     const uid = req.body.uid;
 
-    if (uid) {
-      console.log(uid);
-      db.dbTable.create({
-        uid: uid,
-        dataUPC: upc
-        // dataNDBNO:
-      }).then(dbItem => { console.log(dbItem); });
-    }
-
     const upcQueryUrl = genUpcQueryUrl(upc);
     console.log('Searching ndbno in USDA using UPC:\n', upcQueryUrl);
     axios
@@ -151,14 +142,28 @@ module.exports = function (app) {
             .then(response => {
               // 
               res.send(response.data);
+              // if successful, log query into mysql table
+              if (uid) {
+                console.log(uid);
+                db.dbTable.create({
+                  uid: uid,
+                  dataUPC: upc,
+                  dataNDBNO: ndbno
+                }).then(dbItem => {
+                  // console.log(dbItem);
+                  console.log("query written to mysql table");
+                });
+              }
             })
             .catch(error => {
               console.log(error);
+              res.send(error);
             });
         }
       })
       .catch(function (error) {
         console.log(error);
+        res.send(error);
       });
   });
 
