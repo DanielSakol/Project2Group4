@@ -1,15 +1,44 @@
 <!DOCTYPE html>
 <html>
 
+{{!-- 
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
   <link rel="stylesheet" href="/styles/styles.css" media="screen" title="no title" charset="utf-8">
   <title>Home Page</title>
+</head> 
+--}}
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>x-pzr</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="styles/home.css">
 </head>
 
 <body>
+  <header>
+    <nav class="navbar navbar-light bg-dark">
+      <form class="form-inline">
+        <input class="form-control mr-sm-2" type="search" value="070038630678" id='searchInput' aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id='searchBtn'>Search</button>
+        <a class="camera-Icon" href="#">
+          <img src="../styles/img/camera-icon.png">
+        </a>
+      </form>
+      <a class="profile-Icon" href="/profile">
+        <img src="../styles/img/profile-icon.png">
+      </a>
+    </nav>
+  </header>
+
   {{{body}}}
+  
 </body>
 
 </html>

@@ -1,8 +1,11 @@
 // Get references to page elements
 let $exampleText = $('#example-text');
 let $exampleDescription = $('#example-description');
-let $submitBtn = $('#submitBtn');
 let $exampleList = $('#example-list');
+
+let $submitBtn = $('#submitBtn');
+let $searchBtn = $("#searchBtn");
+
 
 // The API object contains methods for each kind of request we'll make
 let API = {
@@ -54,7 +57,6 @@ let refreshExamples = function () {
 
       return $li;
     });
-
     $exampleList.empty();
     $exampleList.append($examples);
   });
@@ -98,3 +100,4 @@ let handleDeleteBtnClick = function () {
 // Add event listeners to the submit and delete buttons
 $submitBtn.on('click', handleFormSubmit);
 $exampleList.on('click', '.delete', handleDeleteBtnClick);
+
