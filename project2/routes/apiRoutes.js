@@ -32,11 +32,18 @@ const genNdbnoQueryUrl = function (ndbno) {
   const params = {
     format: 'json',
     type: 's', // [b]asic, [f]ull, [s]tats
-    ndbno: [ndbno], // a list of up to 25 nbd numbers
+    ndbno: ndbno, // a list of up to 25 nbd numbers
     api_key: process.env.usda_key
   };
+  console.log(params);
   // QueryUrl = 'https://api.nal.usda.gov/ndb/search/?format=json&ndbno=45346780&api_key=0RYf48D8ckcFA864kSW8vl49MtNxv2o99FhLHP01';
-  queryUrl = baseUrl + Object.keys(params).map(k => k + '=' + params[k]).join('&');
+  const ndbnoStr = (Array.isArray(ndbno)) ? ndbno.join("&ndbno=") : ndbno;
+  queryUrl = baseUrl
+    // + Object.keys(params).map(k => k + '=' + params[k]).join('&')
+    + 'format=' + 'json'
+    + '&type=' + 's'
+    + '&api_key=' + params.api_key
+    + '&ndbno=' + ndbnoStr;
   return queryUrl;
 }
 
@@ -179,18 +186,19 @@ module.exports = function (app) {
       });
   });
 
-  app.post("/api/profile", function (req, res) {
-    console.log("/api/profile called\n", req.body, req.body.uid);
-    res.json({
-      userName: "asdf",
-      histList: []
-    });
-  })
+  // app.post("/api/profile", function (req, res) {
+  //   console.log("/api/profile called\n", req.body, req.body.uid);
+  //   res.json({
+  //     userName: "asdf",
+  //     histList: []
+  //   });
+  // })
 
   app.post("/api/history", function (req, res) {
     console.log("/api/history called\n", req.body, req.body.uid);
     let retJSON = {};
     db.usrTable.findAll({ where: { uid: req.body.uid } })
+      // get user profile
       .then(dbRecords => {
         const userEntry = dbRecords[0].dataValues;
         // console.log(dbRecords[0].dataValues);
@@ -199,20 +207,34 @@ module.exports = function (app) {
         retJSON['fullName'] = userEntry.fullName;
         // console.log(retJSON);
         return retJSON
-      }).then(retJSON => {
+      })
+      // get all products searched by user
+      .then(retJSON => {
         return db.dbTable.findAll({
           where: {
             uid: req.body.uid
           }
-        }).then(function (dbRecords) {
-          const ndbnoArr = dbRecords.map(v => v.dataValues.dataNDBNO);
-          retJSON['history'] = ndbnoArr;
-          // console.log(retJSON);
-          return retJSON;
-        }).then(retJSON => {
-          console.log(retJSON);
-          res.json(retJSON);
         })
+          // turn ndbno into product info
+          .then(function (dbRecords) {
+            const ndbnoArr = dbRecords.map(v => v.dataValues.dataNDBNO);
+            console.log(genNdbnoQueryUrl(ndbnoArr));
+            return axios.get(genNdbnoQueryUrl(ndbnoArr))
+              .then(response => {
+                // console.log(response);
+                const nameArr = response.data.foods.map(v => v.food.desc.name);
+                retJSON['history'] = nameArr;
+                return retJSON
+              })
+            // retJSON['history'] = ndbnoArr;
+            // console.log(retJSON);
+            // return retJSON;
+          })
+          // return the result to frontend
+          .then(retJSON => {
+            // console.log(retJSON);
+            res.json(retJSON);
+          })
       })
     // db.dbTable.findAll({
     //   where: {
@@ -236,17 +258,17 @@ module.exports = function (app) {
     // });
   })
 
-  // Create a new record in mysql table
-  app.post("/api/log", function (req, res) {
-    console.log(req);
-    let record = {
-      uid: req.body.uid,
-      dataUPC: req.body.dataUPC,
-      dataNDBNO: req.body.dataNDBNO
-    }
-    db.dbTable.create(record)
-      .then(function (dbRecord) {
-        res.json(dbRecord);
-      });
-  });
+  // // Create a new record in mysql table
+  // app.post("/api/log", function (req, res) {
+  //   console.log(req);
+  //   let record = {
+  //     uid: req.body.uid,
+  //     dataUPC: req.body.dataUPC,
+  //     dataNDBNO: req.body.dataNDBNO
+  //   }
+  //   db.dbTable.create(record)
+  //     .then(function (dbRecord) {
+  //       res.json(dbRecord);
+  //     });
+  // });
 };

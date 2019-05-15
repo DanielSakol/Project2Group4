@@ -1,8 +1,22 @@
 console.log("query.js running");
 
+$("#searchInput").attr('value', () => {
+    const pool = ['864563000231',
+        '855531002234',
+        '611269206432',
+        '049022556003',
+        '708971925819',
+        '074690025032',
+        '725439947954'
+    ];
+    const idx = Math.floor(Math.random() * pool.length)
+    return pool[idx];
+});
+
 let searchBtnFn = function (event) {
     event.preventDefault();
     console.log("search button clicked");
+    // window.location.replace("/product");
     const queryJSON = {
         queryStr: $("#searchInput").val().trim(),
         uid: sessionStorage.uid
@@ -17,22 +31,20 @@ let searchBtnFn = function (event) {
         console.log(response);
         // empty out the product-name/ingredient 
         // take response and append into product-name/ingredient
-        $('#product-name').empty(); 
+        $('#product-name').empty();
         $('#product-name').append(JSON.stringify(response.foods[0].food.desc.name))
 
-        let ingStr=response.foods[0].food.ing.desc;
-        let ingArr=ingStr.split(',');
+        let ingStr = response.foods[0].food.ing.desc;
+        let ingArr = ingStr.split(',');
         console.log(ingArr);
-        
+
         $('#product-ingredient').empty();
-        for (i = 0; i < ingArr.length; i++) {
-        $('#product-ingredient').append('<tr><td>' + JSON.stringify(ingArr[i]) + '</td><tr>')
-        }
-        
-
-  
-
-
+        ingArr.forEach(v => {
+            $('#product-ingredient').append('<tr><td>' + v + '</td><tr>');
+        });
+        // for (i = 0; i < ingArr.length; i++) {
+        //     $('#product-ingredient').append('<tr><td>' + JSON.stringify(ingArr[i]) + '</td><tr>')
+        // }
     }).catch(error => {
         console.log(error);
     })
