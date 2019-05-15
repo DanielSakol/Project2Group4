@@ -19,8 +19,12 @@ let handleSignIn = function (event) {
         console.log(response);
         if (response.uid) {
             sessionStorage.setItem("uid", response.uid);
+            window.location.replace("/product");
         } else {
             sessionStorage.setItem("uid", null);
+            $("<h1>")
+                .text("Incorrect login info.")
+                .appendTo($("#signInPrompt"));
         }
     })
 }
