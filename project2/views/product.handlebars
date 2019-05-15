@@ -1,23 +1,19 @@
+<header>
 <nav class="navbar navbar-light bg-dark">
   <form class="form-inline">
-
-  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-
-  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-
+  <input class="form-control mr-sm-2" type="search" value="070038630678" id='searchInput' aria-label="Search">
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id='searchBtn' >Search</button>
   <a class="camera-Icon" href="#">
     <img src="../styles/img/camera-icon.png">
   </a>
-
   </form>
-    <a class="profile-Icon" href="#">
+    <a class="profile-Icon" href="profile">
       <img src="../styles/img/profile-icon.png">
     </a>
 </nav>
+</header>
 
-<div id="productTitle">
-  <h1>PRODUCT</h1>
-</div>
+<div id="product-name"></div>
 
 <div id="img">
   <p>IMG WILL BE HERE</p>
@@ -32,7 +28,7 @@
   <tbody>
 
   <tr>
-    <td>Sugar</td>
+    <td id="product-ingredient"></td>
   </tr>
 
   <tr>
@@ -42,6 +38,10 @@
   <tr>
     <td>and Everything Nice</td>
   </tr>
-
   </tbody>
 </table>
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="js/query.js" type="text/javascript"></script>
