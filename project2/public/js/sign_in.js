@@ -18,8 +18,10 @@ let handleSignIn = function (event) {
     }).then(response => {
         console.log(response);
         if (response.uid) {
+            const searchForm = $('#searchForm');
+            searchForm.attr('action', searchForm.attr('action') + response.uid);
             sessionStorage.setItem("uid", response.uid);
-            window.location.replace("/product");
+            // window.location.replace("/product");
         } else {
             sessionStorage.setItem("uid", null);
             $("<h1>")

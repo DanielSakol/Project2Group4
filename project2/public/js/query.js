@@ -1,4 +1,6 @@
 console.log("query.js running");
+const searchForm = $('#searchForm');
+searchForm.attr('action', searchForm.attr('action') +'/' +sessionStorage.uid);
 
 $("#searchInput").attr('value', () => {
     const pool = ['864563000231',
@@ -16,7 +18,7 @@ $("#searchInput").attr('value', () => {
 let searchBtnFn = function (event) {
     event.preventDefault();
     console.log("search button clicked");
-    // window.location.replace("/product");
+    
     const queryJSON = {
         queryStr: $("#searchInput").val().trim(),
         uid: sessionStorage.uid
@@ -28,7 +30,10 @@ let searchBtnFn = function (event) {
         url: "/api/query",
         data: queryJSON
     }).then(response => {
+        // window.location="/product";
         console.log(response);
+        $("#userForm").addClass("hidden");
+        $("#display").removeClass("hidden");
         // empty out the product-name/ingredient 
         // take response and append into product-name/ingredient
         $('#product-name').empty();
@@ -50,5 +55,5 @@ let searchBtnFn = function (event) {
     })
 }
 
-$("#searchBtn").on('click', searchBtnFn);
+// $("#searchBtn").on('click', searchBtnFn);
 

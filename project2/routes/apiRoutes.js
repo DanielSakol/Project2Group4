@@ -35,7 +35,7 @@ const genNdbnoQueryUrl = function (ndbno) {
     ndbno: ndbno, // a list of up to 25 nbd numbers
     api_key: process.env.usda_key
   };
-  console.log(params);
+  // console.log(params);
   // QueryUrl = 'https://api.nal.usda.gov/ndb/search/?format=json&ndbno=45346780&api_key=0RYf48D8ckcFA864kSW8vl49MtNxv2o99FhLHP01';
   const ndbnoStr = (Array.isArray(ndbno)) ? ndbno.join("&ndbno=") : ndbno;
   queryUrl = baseUrl
@@ -44,6 +44,7 @@ const genNdbnoQueryUrl = function (ndbno) {
     + '&type=' + 's'
     + '&api_key=' + params.api_key
     + '&ndbno=' + ndbnoStr;
+  console.log(queryUrl);
   return queryUrl;
 }
 
@@ -131,13 +132,15 @@ module.exports = function (app) {
 
   });
 
-  app.post("/api/query", function (req, res) {
+  app.post("/api/query/:uid", function (req, res) {
     // calling res.send() here is problematic for the other res.send() call later
     // res.send("custom api called");
     // console.log("custom api called");
     // const upc = '070038630678';//'096619756803'
     const upc = req.body.queryStr;
-    const uid = req.body.uid;
+    console.log(upc);
+    const uid = req.params.uid;
+    console.log(uid);
 
     const upcQueryUrl = genUpcQueryUrl(upc);
     console.log('Searching ndbno in USDA using UPC:\n', upcQueryUrl);
@@ -160,7 +163,14 @@ module.exports = function (app) {
           axios.get(ndbQueryUrl)
             .then(response => {
               // 
-              res.send(response.data);
+              // res.send(response.data);
+              console.log(response.data);
+              const ingStr = response.data.foods[0].food.ing.desc;
+              const ingArr = ingStr.split(',');
+              res.render('product', {
+                productName: response.data.foods[0].food.desc.name,
+                ingList: ingArr
+              });
               // if successful, log query into mysql table
               if (uid) {
                 console.log(uid);
@@ -186,30 +196,24 @@ module.exports = function (app) {
       });
   });
 
-  // app.post("/api/profile", function (req, res) {
-  //   console.log("/api/profile called\n", req.body, req.body.uid);
-  //   res.json({
-  //     userName: "asdf",
-  //     histList: []
-  //   });
-  // })
-
   app.post("/api/history", function (req, res) {
-    console.log("/api/history called\n", req.body, req.body.uid);
+    console.log("/api/history called", req.body, req.body.uid);
     let retJSON = {};
     db.usrTable.findAll({ where: { uid: req.body.uid } })
       // get user profile
       .then(dbRecords => {
+        // console.log(dbRecords);
         const userEntry = dbRecords[0].dataValues;
         // console.log(dbRecords[0].dataValues);
         retJSON['userName'] = userEntry.userName;
         retJSON['userEmail'] = userEntry.userEmail;
         retJSON['fullName'] = userEntry.fullName;
-        // console.log(retJSON);
+        console.log(retJSON);
         return retJSON
       })
       // get all products searched by user
       .then(retJSON => {
+        console.log(req.body.uid);
         return db.dbTable.findAll({
           where: {
             uid: req.body.uid
@@ -218,7 +222,7 @@ module.exports = function (app) {
           // turn ndbno into product info
           .then(function (dbRecords) {
             const ndbnoArr = dbRecords.map(v => v.dataValues.dataNDBNO);
-            console.log(genNdbnoQueryUrl(ndbnoArr));
+            console.log(ndbnoArr);
             return axios.get(genNdbnoQueryUrl(ndbnoArr))
               .then(response => {
                 // console.log(response);
@@ -258,17 +262,4 @@ module.exports = function (app) {
     // });
   })
 
-  // // Create a new record in mysql table
-  // app.post("/api/log", function (req, res) {
-  //   console.log(req);
-  //   let record = {
-  //     uid: req.body.uid,
-  //     dataUPC: req.body.dataUPC,
-  //     dataNDBNO: req.body.dataNDBNO
-  //   }
-  //   db.dbTable.create(record)
-  //     .then(function (dbRecord) {
-  //       res.json(dbRecord);
-  //     });
-  // });
 };

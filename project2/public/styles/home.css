@@ -157,3 +157,7 @@ body {
   background-color: darkgray;
   text-align: center;
 }
+
+.hidden{
+  display:none;
+}
