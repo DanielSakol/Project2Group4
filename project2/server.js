@@ -1,45 +1,62 @@
-require("dotenv").config();
-var express = require("express");
-var exphbs = require("express-handlebars");
+require('dotenv').config();
+const express = require('express');
+const exphbs = require('express-handlebars');
 
-var db = require("./models");
+const db = require('./models');
+// firebase user auth
+const firebase = require('firebase/app');
+require('firebase/auth');
 
-var app = express();
-var PORT = process.env.PORT || 3000;
+const firebaseConfig = {
+  apiKey: process.env.firebase_apiKey,
+  authDomain: 'group4proj2.firebaseapp.com',
+  databaseURL: 'https://group4proj2.firebaseio.com',
+  projectId: 'group4proj2',
+  storageBucket: 'group4proj2.appspot.com',
+  messagingSenderId: '839976170219',
+  appId: process.env.firebase_appID
+};
+firebase.initializeApp(firebaseConfig);
+
+
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(express.static("public"));
+const path = require('path');
+app.use(express.static(path.join(__dirname, '/public')));
+// app.use(express.bodyParser());
 
 // Handlebars
 app.engine(
-  "handlebars",
+  'handlebars',
   exphbs({
-    defaultLayout: "main"
-  })
+    defaultLayout: 'main',
+  }),
 );
-app.set("view engine", "handlebars");
+app.set('view engine', 'handlebars');
 
 // Routes
-require("./routes/apiRoutes")(app);
-require("./routes/htmlRoutes")(app);
+require('./routes/apiRoutes')(app);
+require('./routes/htmlRoutes')(app);
 
-var syncOptions = { force: false };
+const syncOptions = { force: false };
 
 // If running a test, set syncOptions.force to true
 // clearing the `testdb`
-if (process.env.NODE_ENV === "test") {
+if (process.env.NODE_ENV === 'test') {
   syncOptions.force = true;
 }
 
 // Starting the server, syncing our models ------------------------------------/
-db.sequelize.sync(syncOptions).then(function() {
-  app.listen(PORT, function() {
+db.sequelize.sync(syncOptions).then(() => {
+  app.listen(PORT, () => {
     console.log(
-      "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
+      '==> Listening on port %s. Visit http://localhost:%s/ in your browser.',
       PORT,
-      PORT
+      PORT,
     );
   });
 });
