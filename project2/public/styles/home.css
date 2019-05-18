@@ -34,8 +34,8 @@ body {
   }
 .link {
   position: relative;
-  top: 20px;
-  left: 1000px;
+  /* top: 20px; */
+  left: 300px;
   font-size: 12px;
   color: rgb(81, 216, 63);
 }
